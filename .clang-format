@@ -1,0 +1,18 @@
+---
+AlignTrailingComments:
+  Kind: Always
+  OverEmptyLines: 0
+BasedOnStyle: WebKit
+BinPackArguments: false
+BreakBeforeBraces: Attach
+BreakInheritanceList: AfterComma
+BreakConstructorInitializers: BeforeComma
+IndentPPDirectives: AfterHash
+IndentRequiresClause: false
+InsertNewlineAtEOF: true
+LineEnding: LF
+NamespaceIndentation: None
+RemoveSemicolon: true
+RequiresClausePosition: WithFollowing
+RequiresExpressionIndentation: OuterScope
+SpaceAfterTemplateKeyword: false
