@@ -1,0 +1,13 @@
+CompileFlags:
+    Remove:
+        [
+            -fno-tree-switch-conversion,
+            -fno-shrink-wrap,
+            -fconcepts,
+            -mtext-section-literals,
+            -mlongcalls,
+            -fstrict-volatile-bitfields,
+        ]
+
+Diagnostics:
+    Suppress: attribute_section_invalid_for_target
