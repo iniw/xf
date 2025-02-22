@@ -217,7 +217,6 @@ public:
     Task(const Task&) = delete;
     Task& operator=(const Task&) = delete;
 
-#ifdef ESP_PLATFORM
     [[nodiscard]] bool create(const char* name, uint32_t stack_size, UBaseType_t priority, BaseType_t core_id = -1) {
         configASSERT(m_handle == nullptr);
         if (core_id == -1) {
@@ -230,16 +229,6 @@ public:
     [[nodiscard]] bool create(uint32_t stack_size, UBaseType_t priority, BaseType_t core_id = -1) {
         return create(nullptr, stack_size, priority, core_id);
     }
-#else
-    [[nodiscard]] bool create(const char* name, uint32_t stack_size, UBaseType_t priority) {
-        configASSERT(m_handle == nullptr);
-        return xTaskCreate(task, name, stack_size, this, priority, &m_handle) == pdPASS;
-    }
-
-    [[nodiscard]] bool create(uint32_t stack_size, UBaseType_t priority) {
-        return create(nullptr, stack_size, priority);
-    }
-#endif
 
     void suspend() {
         vTaskSuspend(m_handle);
@@ -291,16 +280,7 @@ protected:
     static void task(void* raw_self) {
         auto& self = *static_cast<Task*>(raw_self);
 
-        if constexpr (HAS_SETUP) {
-            if constexpr (HAS_FALLIBLE_SETUP) {
-                if (not self.setup()) {
-                    self.destroy();
-                    return;
-                }
-            } else {
-                self.setup();
-            }
-        }
+        self.setup();
 
         self.run();
 
@@ -317,21 +297,9 @@ protected:
     }
 
 private:
-    static constexpr bool HAS_SETUP = requires { std::declval<T>().setup_impl(); };
-    static constexpr bool HAS_FALLIBLE_SETUP = requires { { std::declval<T>().setup_impl() } -> std::convertible_to<bool>; };
-
-    // Implementing this is optional
-    void setup()
-    requires(not HAS_FALLIBLE_SETUP)
-    {
-        static_cast<T*>(this)->setup_impl();
-    }
-
-    // Implementing this is optional
-    [[nodiscard]] decltype(auto) setup()
-    requires(HAS_FALLIBLE_SETUP)
-    {
-        return static_cast<T*>(this)->setup_impl();
+    void setup() {
+        if constexpr (requires { std::declval<T>().setup_impl(); })
+            static_cast<T*>(this)->setup_impl();
     }
 
     void run() {
@@ -383,7 +351,6 @@ class StaticTask : public Task<T> {
 public:
     static_assert(STACK_SIZE >= configMINIMAL_STACK_SIZE);
 
-#ifdef ESP_PLATFORM
     void create(const char* name, UBaseType_t priority, BaseType_t core_id = -1) {
         configASSERT(this->m_handle == nullptr);
         if (core_id == -1) {
@@ -396,16 +363,6 @@ public:
     void create(UBaseType_t priority, BaseType_t core_id = -1) {
         create(nullptr, priority, core_id);
     }
-#else
-    void create(const char* name, UBaseType_t priority) {
-        configASSERT(this->m_handle == nullptr);
-        this->m_handle = xTaskCreateStatic(Task<T>::task, name, STACK_SIZE, this, priority, m_stack_buffer.data(), &m_static_task);
-    }
-
-    void create(UBaseType_t priority) {
-        create(nullptr, priority);
-    }
-#endif
 
 private:
     // Hide the visibility of the `create` function from the base class, since that has the stack size parameter
