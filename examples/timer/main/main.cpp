@@ -11,14 +11,14 @@ public:
     Task()
         : m_timer(
               xf::timer::Mode::Repeating,
-              [](int& counter) {
+              [](int& counter, float& f, std::string& str) {
                   counter = 0;
                   ESP_LOGI("Timer", "Reset the counter back to 0");
               },
-              m_counter) { }
+              m_counter, 0.0f, "") { }
 
 private:
-    xf::timer::Timer<int&> m_timer;
+    xf::timer::Timer<int&, float, std::string> m_timer;
 
     int m_counter { 0 };
 };
