@@ -32,11 +32,11 @@ using Handle = TimerHandle_t;
 template<typename... Ctx>
 class Timer {
 public:
-    using Callback = void (*)(Ctx...);
+    using Callback = void (*)(Ctx&...);
 
     /// Constructs a new timer using the provided mode, callback and context.
     /// The timer is not yet valid and must be made so by calling the `create()` function before being used.
-    Timer(Mode, Callback, Ctx...);
+    Timer(Mode, Callback, Ctx&&...);
 
     /// Destroys the timer if it has been created, does nothing otherwise.
     ~Timer();
@@ -143,10 +143,10 @@ private:
 };
 
 template<typename... Ctx>
-Timer<Ctx...>::Timer(Mode mode, Callback callback, Ctx... ctx)
+Timer<Ctx...>::Timer(Mode mode, Callback callback, Ctx&&... ctx)
     : m_mode(mode)
     , m_callback(callback)
-    , m_ctx(ctx...) {
+    , m_ctx(std::forward<Ctx>(ctx)...) {
 }
 
 template<typename... Ctx>
