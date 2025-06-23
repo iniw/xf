@@ -6,7 +6,7 @@
 using ProtectedData = xf::semaphore::MutexProtected<int>;
 
 // Our first task. Will fight for access over the shared data against `B`.
-class TaskA : public xf::task::StaticTask<2048> {
+class TaskA : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:
@@ -27,7 +27,7 @@ void TaskA::run() {
 }
 
 // Our second task. Will fight for access over the shared data against `A`.
-class TaskB : public xf::task::StaticTask<2048> {
+class TaskB : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:
@@ -42,7 +42,7 @@ void TaskB::run() {
     every(std::chrono::seconds { 10 }, [&] {
         m_protected_data.await_access([&](int& data) {
             int old = std::exchange(data, 47);
-            ESP_LOGI("Task A", "Got data (old=%d, new=%d)", old, data);
+            ESP_LOGI("Task B", "Got data (old=%d, new=%d)", old, data);
         });
     });
 }
