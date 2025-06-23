@@ -24,6 +24,7 @@ private:
 };
 void Task::setup() {
     m_timer.create("Example timer", std::chrono::seconds { 25 });
+    m_timer.await_start();
 }
 
 void Task::run() {
