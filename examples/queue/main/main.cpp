@@ -9,7 +9,7 @@ using Queue = xf::queue::StaticQueue<std::string, 5>;
 
 // The producer of our queue.
 // Gets access to it by way of dependency injection, which I've found to be the sanest way to do it.
-class Producer : public xf::task::StaticTask<2048> {
+class Producer : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:
@@ -31,7 +31,7 @@ void Producer::run() {
 
 // The consumer of our queue.
 // Gets access to it by way of dependency injection, which I've found to be the sanest way to do it.
-class Consumer : public xf::task::StaticTask<2048> {
+class Consumer : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:
