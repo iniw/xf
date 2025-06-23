@@ -47,7 +47,7 @@ void TaskB::run() {
     });
 }
 
-extern "C" void app_main(void) {
+extern "C" void app_main() {
     static ProtectedData data { 0 };
     static TaskA task_a { data };
     static TaskB task_b { data };

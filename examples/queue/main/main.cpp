@@ -49,7 +49,7 @@ void Consumer::run() {
     }
 }
 
-extern "C" void app_main(void) {
+extern "C" void app_main() {
     static Queue queue;
     static Producer producer { queue };
     static Consumer consumer { queue };

@@ -101,6 +101,6 @@ void Maestro::run() {
     }
 }
 
-extern "C" void app_main(void) {
+extern "C" void app_main() {
     static Maestro maestro;
 }

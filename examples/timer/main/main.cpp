@@ -34,7 +34,7 @@ void Task::run() {
     });
 }
 
-extern "C" void app_main(void) {
+extern "C" void app_main() {
     static Task task;
     task.create("Task", 10);
 }
