@@ -33,7 +33,7 @@ void Blinky::run() {
     }
 }
 
-extern "C" void app_main(void) {
+extern "C" void app_main() {
     // `app_main` is itself a task will return and destroy everything in it's stack, so mark our object as `static` to make it immortal.
     static Blinky blinky;
 
