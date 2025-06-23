@@ -5,7 +5,7 @@
 // TaskA and TaskB are tightly coupled via circular queue communication.
 // The queues are not owned by the tasks themselves to avoid a chicken-and-egg problem during construction.
 // If they owned their queues, constructing either task would require the other to already exist.
-class TaskA : public xf::task::StaticTask<2048> {
+class TaskA : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:
@@ -27,7 +27,7 @@ void TaskA::run() {
     }
 }
 
-class TaskB : public xf::task::StaticTask<2048> {
+class TaskB : public xf::task::StaticTask<4096> {
     void run() override;
 
 public:

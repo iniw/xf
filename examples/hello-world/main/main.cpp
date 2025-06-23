@@ -1,8 +1,8 @@
 #include <esp_log.h>
 #include <xf/task/StaticTask.hpp>
 
-// `Blinky` is an object representing a statically allocated task with 2048 "bytes" of stack depth.
-class Blinky : public xf::task::StaticTask<2048> {
+// `Blinky` is an object representing a statically allocated task with 4096 "bytes" of stack depth.
+class Blinky : public xf::task::StaticTask<4096> {
     // The optional setup function, will run once after the task is created,
     void setup() override;
 
