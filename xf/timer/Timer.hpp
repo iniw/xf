@@ -54,6 +54,12 @@ public:
     template<typename Rep, typename Period>
     void create(const char* name, std::chrono::duration<Rep, Period> period);
 
+    /// Creates the timer without a name using the provided period.
+    /// Refer to the module-level `time` documentation to see how time is converted to FreeRTOS ticks.
+    /// Analogous to [`xTimerCreateStatic`](https://freertos.org/Documentation/02-Kernel/04-API-references/11-Software-timers/22-xTimerCreateStatic).
+    template<typename Rep, typename Period>
+    void create(std::chrono::duration<Rep, Period> period);
+
     /// Queries the timer to see if it is active or dormant.
     /// A timer will be dormant if:
     ///     1. It has been created but not started, or
@@ -187,6 +193,12 @@ void Timer<Ctx...>::create(const char* name, std::chrono::duration<Rep, Period> 
         this,
         &Timer::callback,
         &m_static_timer);
+}
+
+template<typename... Ctx>
+template<typename Rep, typename Period>
+void Timer<Ctx...>::create(std::chrono::duration<Rep, Period> period) {
+    create(nullptr, period);
 }
 
 template<typename... Ctx>
