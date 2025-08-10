@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bit>
 #include <cstddef>
 #include <optional>
 
@@ -91,7 +92,7 @@ std::optional<typename Queue<Item>::ReceiveData> Queue<Item>::receive() {
     if (xQueueReceiveFromISR(m_handle, &buffer, &higher_priority_task_woken) != pdTRUE)
         return std::nullopt;
 
-    return { *std::launder(reinterpret_cast<Item*>(&buffer)), higher_priority_task_woken };
+    return { std::bit_cast<Item>(buffer), higher_priority_task_woken };
 }
 
 template<typename Item>
@@ -107,7 +108,7 @@ std::optional<typename Queue<Item>::ReceiveData> Queue<Item>::peek() {
     if (xQueuePeekFromISR(m_handle, &buffer) != pdTRUE)
         return std::nullopt;
 
-    return { *std::launder(reinterpret_cast<Item*>(&buffer)), higher_priority_task_woken };
+    return { std::bit_cast<Item>(buffer), higher_priority_task_woken };
 }
 
 template<typename Item>
