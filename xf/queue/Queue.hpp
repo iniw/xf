@@ -282,10 +282,10 @@ std::optional<Item> Queue<Item>::receive(std::chrono::duration<Rep, Period> time
     if (xQueueReceive(m_handle, &buffer, time::to_raw_tick(timeout)) == pdFALSE)
         return std::nullopt;
 
-    auto& stored_item = *std::launder(reinterpret_cast<StoredItem*>(&buffer));
     if constexpr (std::is_trivially_copyable_v<Item>) {
-        return stored_item;
+        return std::bit_cast<StoredItem>(buffer);
     } else {
+        auto* stored_item = std::bit_cast<StoredItem>(buffer);
         auto result { std::move(*stored_item) };
         mem::destroy(stored_item);
         return result;
@@ -314,11 +314,10 @@ std::optional<Item> Queue<Item>::peek(std::chrono::duration<Rep, Period> timeout
     if (xQueuePeek(m_handle, &buffer, time::to_raw_tick(timeout)) == pdFALSE)
         return std::nullopt;
 
-    auto& stored_item = *std::launder(reinterpret_cast<StoredItem*>(&buffer));
     if constexpr (std::is_trivially_copyable_v<Item>) {
-        return stored_item;
+        return std::bit_cast<StoredItem>(buffer);
     } else {
-        return *stored_item;
+        return *std::bit_cast<StoredItem>(buffer);
     }
 }
 

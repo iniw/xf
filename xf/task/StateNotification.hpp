@@ -55,7 +55,7 @@ template<typename Rep, typename Period>
 
     alignas(T) std::byte buffer[sizeof(T)];
     std::memcpy(buffer, &raw_value, sizeof(T));
-    return *std::launder(reinterpret_cast<T*>(&buffer));
+    return std::bit_cast<T>(buffer);
 }
 
 template<typename T>
